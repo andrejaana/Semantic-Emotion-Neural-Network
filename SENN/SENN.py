@@ -120,7 +120,7 @@ def build_model(X_train, X_test, Y_train, Y_test):
             embedding_matrix2[i] = embedding_vector2
     inp2 = Input(shape=(sequence_length,))
     embedding = Embedding(nb_words2, EMBEDDING_DIM2, weights=[embedding_matrix2])(inp2)
-    reshape = Reshape((sequence_length, EMBEDDING_DIM2, 1))(embedding)
+    reshape = Reshape((sequence_length * EMBEDDING_DIM2, 1))(embedding)
     conv_0 = Conv1D(filters=num_filters, kernel_size=filter_sizes[0], activation='relu', kernel_regularizer=regularizers.l2(0.01))(reshape)
     conv_1 = Conv1D(ilters=num_filters, kernel_size=filter_sizes[1], activation='relu', kernel_regularizer=regularizers.l2(0.01))(reshape)
     conv_2 = Conv1D(ilters=num_filters, kernel_size=filter_sizes[2], activation='relu', kernel_regularizer=regularizers.l2(0.01))(reshape)

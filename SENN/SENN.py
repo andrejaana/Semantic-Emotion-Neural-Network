@@ -65,34 +65,34 @@ def build_model(X_train, X_test, Y_train, Y_test):
 
 
     # the semantic encoder
-    # print("Start building the semantic encoder")
-    # embeddings_index = {}
-    # fin = io.open('cc.en.300.vec', 'r', encoding='utf-8', newline='\n', errors='ignore')
-    # line_counter = 0
-    # for line in fin:
-    #     values = line.rstrip().rsplit(' ')
-    #     word = values[0]
-    #     coefs = np.asarray(values[1:], dtype='float32')
-    #     embeddings_index[word] = coefs
-    #     line_counter+=1
-    # fin.close()
-    # # print(embeddings_index)
-    # all_embedding = np.stack(embeddings_index.values())
-    # emb_mean, emb_std = all_embedding.mean(), all_embedding.std()
-    # word_index = tokenizer.word_index
-    # nb_words = min(max_features, len(word_index))
-    # embedding_matrix = np.random.normal(emb_mean, emb_std, (nb_words, EMBEDDING_DIM1))
-    # for word, i in word_index.items():
-    #     if i >= max_features:
-    #         continue
-    #     embedding_vector = embeddings_index.get(word)
-    #     if embedding_vector is not None:
-    #         embedding_matrix[i] = embedding_vector
-    # inp = Input(shape=(sequence_length,))
-    # x = Embedding(max_features, EMBEDDING_DIM1, weights=[embedding_matrix])(inp)
-    # x = Bidirectional(LSTM(batch_size, return_sequences=True))(x)
-    # x = Dropout(0.5)(x)
-    # model = Model(inputs=inp, outputs=x)
+    print("Start building the semantic encoder")
+    embeddings_index = {}
+    fin = io.open('cc.en.300.vec', 'r', encoding='utf-8', newline='\n', errors='ignore')
+    line_counter = 0
+    for line in fin:
+        values = line.rstrip().rsplit(' ')
+        word = values[0]
+        coefs = np.asarray(values[1:], dtype='float32')
+        embeddings_index[word] = coefs
+        line_counter+=1
+    fin.close()
+    # print(embeddings_index)
+    all_embedding = np.stack(embeddings_index.values())
+    emb_mean, emb_std = all_embedding.mean(), all_embedding.std()
+    word_index = tokenizer.word_index
+    nb_words = min(max_features, len(word_index))
+    embedding_matrix = np.random.normal(emb_mean, emb_std, (nb_words, EMBEDDING_DIM1))
+    for word, i in word_index.items():
+        if i >= max_features:
+            continue
+        embedding_vector = embeddings_index.get(word)
+        if embedding_vector is not None:
+            embedding_matrix[i] = embedding_vector
+    inp = Input(shape=(sequence_length,))
+    x = Embedding(max_features, EMBEDDING_DIM1, weights=[embedding_matrix])(inp)
+    x = Bidirectional(LSTM(batch_size, return_sequences=True))(x)
+    x = Dropout(0.5)(x)
+    model1 = Model(inputs=inp, outputs=x)
 
 
 
@@ -127,7 +127,7 @@ def build_model(X_train, X_test, Y_train, Y_test):
     y = Flatten()(y)
     # reshape = Reshape((2 * num_filters,))(flatten)
     y = Dropout(0.5)(y)
-    y = Model(inputs=input, outputs=y)
+    model2 = Model(inputs=input, outputs=y)
 
 
     # combine the output of the emotion and semantic encoder

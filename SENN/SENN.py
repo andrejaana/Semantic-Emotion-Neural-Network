@@ -125,9 +125,9 @@ def build_model(X_train, X_test, Y_train, Y_test):
     conv_1 = Conv1D(filters=num_filters, kernel_size=filter_sizes[1], activation='relu', kernel_regularizer=regularizers.l2(0.01))(reshape)
     conv_2 = Conv1D(filters=num_filters, kernel_size=filter_sizes[2], activation='relu', kernel_regularizer=regularizers.l2(0.01))(reshape)
 
-    maxpool_0 = MaxPool1D(sequence_length - filter_sizes[0] + 1, strides=(1,1))(conv_0)
-    maxpool_1 = MaxPool1D(sequence_length - filter_sizes[1] + 1, strides=(1,1))(conv_1)
-    maxpool_2 = MaxPool1D(sequence_length - filter_sizes[2] + 1, strides=(1,1))(conv_2)
+    maxpool_0 = MaxPool1D(sequence_length - filter_sizes[0] + 1, strides=1)(conv_0)
+    maxpool_1 = MaxPool1D(sequence_length - filter_sizes[1] + 1, strides=1)(conv_1)
+    maxpool_2 = MaxPool1D(sequence_length - filter_sizes[2] + 1, strides=1)(conv_2)
     y = concatenate([maxpool_0, maxpool_1, maxpool_2], axis=1)
     y = Flatten()(y)
     # reshape = Reshape((3 * num_filters,))(flatten)

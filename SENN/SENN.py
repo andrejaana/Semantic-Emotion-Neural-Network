@@ -54,49 +54,50 @@ def build_model(X_train, X_test, Y_train, Y_test):
     # print(test_pad.shape)
     # print(train_pad.shape)
 
+    batch_size = 128
+    sequence_length = X_train.shape[1]
+    max_features = 2000001
+    EMBEDDING_DIM1 = 300
+    max_features2 = 183713
+    EMBEDDING_DIM2 = 300
+
 
 
 
     # the semantic encoder
-    print("Start building the semantic encoder")
-    max_features = 2000001
-    EMBEDDING_DIM1 = 300
-    batch_size = 128
-    sequence_length = X_train.shape[1]
-    embeddings_index = {}
-    fin = io.open('cc.en.300.vec', 'r', encoding='utf-8', newline='\n', errors='ignore')
-    line_counter = 0
-    for line in fin:
-        values = line.rstrip().rsplit(' ')
-        word = values[0]
-        coefs = np.asarray(values[1:], dtype='float32')
-        embeddings_index[word] = coefs
-        line_counter+=1
-    fin.close()
-    # print(embeddings_index)
-    all_embedding = np.stack(embeddings_index.values())
-    emb_mean, emb_std = all_embedding.mean(), all_embedding.std()
-    word_index = tokenizer.word_index
-    nb_words = min(max_features, len(word_index))
-    embedding_matrix = np.random.normal(emb_mean, emb_std, (nb_words, EMBEDDING_DIM1))
-    for word, i in word_index.items():
-        if i >= max_features:
-            continue
-        embedding_vector = embeddings_index.get(word)
-        if embedding_vector is not None:
-            embedding_matrix[i] = embedding_vector
-    inp = Input(shape=(sequence_length,))
-    x = Embedding(max_features, EMBEDDING_DIM1, weights=[embedding_matrix])(inp)
-    x = Bidirectional(LSTM(batch_size, return_sequences=True))(x)
-    x = Dropout(0.5)(x)
-    model = Model(inputs=inp, outputs=x)
+    # print("Start building the semantic encoder")
+    # embeddings_index = {}
+    # fin = io.open('cc.en.300.vec', 'r', encoding='utf-8', newline='\n', errors='ignore')
+    # line_counter = 0
+    # for line in fin:
+    #     values = line.rstrip().rsplit(' ')
+    #     word = values[0]
+    #     coefs = np.asarray(values[1:], dtype='float32')
+    #     embeddings_index[word] = coefs
+    #     line_counter+=1
+    # fin.close()
+    # # print(embeddings_index)
+    # all_embedding = np.stack(embeddings_index.values())
+    # emb_mean, emb_std = all_embedding.mean(), all_embedding.std()
+    # word_index = tokenizer.word_index
+    # nb_words = min(max_features, len(word_index))
+    # embedding_matrix = np.random.normal(emb_mean, emb_std, (nb_words, EMBEDDING_DIM1))
+    # for word, i in word_index.items():
+    #     if i >= max_features:
+    #         continue
+    #     embedding_vector = embeddings_index.get(word)
+    #     if embedding_vector is not None:
+    #         embedding_matrix[i] = embedding_vector
+    # inp = Input(shape=(sequence_length,))
+    # x = Embedding(max_features, EMBEDDING_DIM1, weights=[embedding_matrix])(inp)
+    # x = Bidirectional(LSTM(batch_size, return_sequences=True))(x)
+    # x = Dropout(0.5)(x)
+    # model = Model(inputs=inp, outputs=x)
 
 
 
     # the emotion encoder
     print("Start building the emotion encoder")
-    max_features2 = 183713
-    EMBEDDING_DIM2 = 300
     num_filters = 100
     filter_sizes = [3, 4, 5]
     embeddings_index2 = dict(get_coefs(*o.strip().split()) for o in open('ewe_uni.txt'))
@@ -113,7 +114,7 @@ def build_model(X_train, X_test, Y_train, Y_test):
         if embedding_vector2 is not None:
             embedding_matrix2[i] = embedding_vector2
     inp2 = Input(shape=(sequence_length,))
-    embedding = Embedding(max_features2, EMBEDDING_DIM2, weights=[embedding_matrix])(inp)
+    embedding = Embedding(max_features2, EMBEDDING_DIM2, weights=[embedding_matrix2])(inp2)
     reshape = Reshape((sequence_length, EMBEDDING_DIM2, 1))(embedding)
     conv_0 = Conv1D(num_filters, (filter_sizes[0], EMBEDDING_DIM2), activation='relu', kernel_regularizer=regularizers.l2(0.01))(reshape)
     conv_1 = Conv1D(num_filters, (filter_sizes[1], EMBEDDING_DIM2), activation='relu', kernel_regularizer=regularizers.l2(0.01))(reshape)

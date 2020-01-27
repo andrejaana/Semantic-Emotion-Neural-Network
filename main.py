@@ -6,6 +6,7 @@
 from SENN.data_loader import *
 from SENN.SENN import model
 import pandas as pd
+import SENN.evaluate
 
 
 # data = get_youtube_data()
@@ -20,13 +21,15 @@ import pandas as pd
 
 # graph_star_classification()
 
-# load_dailyDialogs()
+data, emotions = load_dailyDialogs()
 # load_crowdFlower()
 # load_TEC()
 # load_tales_emotions()
 # load_ISEAR()
 # load_emoInt()
-data, emotions = load_electorialTweets()
+# data, emotions = load_electorialTweets()
 model = model(data,emotions)
+
+
 # from SENN.SENN import get_attributes
 # get_attributes()

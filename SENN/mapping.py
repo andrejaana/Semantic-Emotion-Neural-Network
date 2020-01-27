@@ -1,6 +1,3 @@
-
-
-
 def map_dialog_topic(topic):
     if topic == '1':
         return "ordinary_life"
@@ -28,70 +25,70 @@ def map_dialog_topic(topic):
 
 def map_dialog_emotion(emo):
     if emo=='0':
-        return 'neutral'
+        return [0,0,0,1,0,0,0]
     elif emo=='1':
-        return 'anger'
+        return [1,0,0,0,0,0,0]
     elif emo=='2':
-        return 'disgust'
+        return [0,0,1,0,0,0,0]
     elif emo=='3':
-        return 'fear'
+        return [0,0,0,0,1,0,0]
     elif emo=='4':
-        return 'happiness'
+        return [0,0,0,0,0,0,1]
     elif emo=='5':
-        return 'sadness'
+        return [0,1,0,0,0,0,0]
     elif emo=='6':
-        return 'surprise'
+        return [0,0,0,0,0,1,0]
     else:
         print("Unknown emotion "+ emo)
         exit(1)
 
 def map_TEC_emotion(emo):
     if emo==' anger':
-        return 'anger'
+        return [1,0,0,0,0,0,0]
     elif emo==' disgust':
-        return 'disgust'
+        return [0,0,1,0,0,0,0]
     elif emo==' fear':
-        return 'fear'
+        return [0,0,0,0,1,0,0]
     elif emo==' joy':
-        return 'happiness'
+        return [0,0,0,0,0,0,1]
     elif emo==' sadness':
-        return 'sadness'
+        return [0,1,0,0,0,0,0]
     elif emo==' surprise':
-        return 'surprise'
+        return [0,0,0,0,0,1,0]
     else:
         print("Unknown emotion \;"+ emo+'\;')
         exit(1)
 
 def map_tales_emotions(emo):
     if emo=='N':
-        return 'neutral'
+        return [0,0,0,1,0,0,0]
     elif emo=='A':
-        return 'anger'
+        return [1,0,0,0,0,0,0]
     elif emo=='D':
-        return 'disgust'
+        return [0,0,1,0,0,0,0]
     elif emo=='F':
-        return 'fear'
+        return [0,0,0,0,1,0,0]
     elif emo=='H':
-        return 'happiness'
+        return [0,0,0,0,0,0,1]
     elif emo=='Sa':
-        return 'sadness'
+        return [0,1,0,0,0,0,0]
     elif emo=='Su+' or emo=='Su-':
-        return 'surprise'
+        return [0,0,0,0,0,1,0]
     else:
         print("Unknown emotion "+ emo)
         exit(1)
 
 def map_isear_emotions(emo):
     if emo=='anger':
-        return 'anger'
+        return [1,0,0,0,0,0,0]
     elif emo=='fear':
-        return 'fear'
+        return [0,0,0,0,1,0,0]
     elif emo=='joy':
-        return 'happiness'
+        return [0,0,0,0,0,0,1]
     elif emo=='sadness':
-        return 'sadness'
+        return [0,1,0,0,0,0,0]
     elif emo=='disgust':
-        return 'disgust'
+        return [0,0,1,0,0,0,0]
     elif emo=='shame' or emo=='guilt' or emo=='Field1':
         return None
     else:
@@ -100,13 +97,13 @@ def map_isear_emotions(emo):
 
 def map_emoInt(emo):
     if emo=='anger':
-        return 'anger'
+        return [1,0,0,0,0,0,0]
     elif emo=='fear':
-        return 'fear'
+        return [0,0,0,0,1,0,0]
     elif emo=='joy':
-        return 'happiness'
+        return [0,0,0,0,0,0,1]
     elif emo=='sadness':
-        return 'sadness'
+        return [0,1,0,0,0,0,0]
     else:
         print("Unknown emotion "+ emo)
         exit(1)
@@ -116,20 +113,20 @@ def map_electiontweets(emotion):
     emotion = emotion.split()
     # print(emotion)
     if "anger" in emotion or 'vigilance' in emotion:
-        return "anger"
+        return [1,0,0,0,0,0,0]
     elif 'sadness' in emotion:
-        return 'sadness'
+        return [0,1,0,0,0,0,0]
     elif 'disgust' in emotion or 'dislike' in emotion or 'hate' in emotion or 'disappointment' in emotion:
-        return 'disgust'
+        return [0,0,1,0,0,0,0]
     elif 'indifference' in emotion or 'calmness' in emotion:
-        return 'neutral'
+        return [0,0,0,1,0,0,0]
     elif 'fear' in emotion:
-        return 'fear'
+        return [0,0,0,0,1,0,0]
     elif 'surprise' in emotion or 'amazement' in emotion or 'anticipation' in emotion or 'confusion' in emotion:
-        return 'surprise'
+        return [0,0,0,0,0,1,0]
     elif 'joy' in emotion or 'like' in emotion or 'trust' in emotion or \
             'admiration' in emotion or 'acceptance' in emotion:
-        return 'happiness'
+        return [0,0,0,0,0,0,1]
     else:
         print("Emotion not recognised "+" ".join(emotion))
     return None

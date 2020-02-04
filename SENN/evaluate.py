@@ -1,4 +1,5 @@
 from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
 import numpy as np
 import pandas as pd
 from keras.models import load_model

@@ -1,20 +1,13 @@
-from keras import Input, Model, Sequential, regularizers
-from keras.utils import to_categorical
-from keras.utils import plot_model
-from keras.layers.embeddings import Embedding
+from keras import Input, Model, regularizers
 from keras.layers import Dense, Conv1D, Flatten, Reshape, MaxPool1D, concatenate, LSTM, Bidirectional, Dropout, GlobalMaxPool1D
 from keras.layers.embeddings import Embedding
 from tensorflow.python.keras.preprocessing.text import Tokenizer
 from tensorflow.python.keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
-from keras.models import load_model
-from gensim.models.fasttext import FastText
-import os, re, csv, math, codecs
+import codecs
 from tqdm import tqdm
 import fasttext.util
-import io
 import numpy as np
-import tensorflow as tf
 from keras.optimizers import Adam
 
 def get_attributes():
@@ -25,7 +18,6 @@ def get_attributes():
     # print(len(f[0].split()))
     # print(len(f[1].split()))
     # print(len(f[2].split()))
-
 
 def model(data, emotions):
     # result = to_categorical(np.asarray(result))
@@ -74,7 +66,7 @@ def build_model(X_train, X_test, y_train, y_test):
     # the semantic encoder
     print("Start building the semantic encoder")
     embeddings_index1 = {}
-    f = codecs.open('/content/drive/My Drive/semantic_emotion_recognition/SENN_datasets/cc.en.300.vec',
+    f = codecs.open('cc.en.300.vec',
                     encoding='utf-8')
     for line in tqdm(f):
         values = line.rstrip().rsplit(' ')
@@ -108,7 +100,7 @@ def build_model(X_train, X_test, y_train, y_test):
 
     # The emotional encoder
     embeddings_index2 = {}
-    f = codecs.open('/content/drive/My Drive/semantic_emotion_recognition/SENN_datasets/ewe_uni.txt', encoding='utf-8')
+    f = codecs.open('ewe_uni.txt', encoding='utf-8')
     for line in tqdm(f):
         values = line.rstrip().rsplit(' ')
         word = values[0]
@@ -161,12 +153,12 @@ def build_model(X_train, X_test, y_train, y_test):
     model = Model(inputs=[model1.input, model2.input], outputs=z)
     model.compile(loss='binary_crossentropy', optimizer=Adam(lr=0.001), metrics=['accuracy'])
     print(model.summary())
-    plot_model(model, to_file='model_plot4b.png', show_shapes=True, show_layer_names=True)
+    # plot_model(model, to_file='model_plot4b.png', show_shapes=True, show_layer_names=True)
 
     # print(y_train)
     print(y_train)
     model.fit(x=[X_train, X_train], y=y_train, batch_size=56, epochs=20)
-    model.save('/content/drive/My Drive/semantic_emotion_recognition/SENN_datasets/SENN_dailydialog.h5')
+    model.save('SENN_dailydialog.h5')
 
 def load_embedding(file):
     print("loading embedding")

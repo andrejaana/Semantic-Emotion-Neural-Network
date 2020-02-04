@@ -1,3 +1,5 @@
+from SENN.preprocessing import preprocess_text
+
 def map_dialog_topic(topic):
     if topic == '1':
         return "ordinary_life"
@@ -41,6 +43,33 @@ def map_dialog_emotion(emo):
     else:
         print("Unknown emotion "+ emo)
         exit(1)
+
+def map_crowdflower(data, emotions):
+    res_data = []
+    res_emotions = []
+    for i in range(0, len(emotions)):
+        emotion = emotions[i]
+        if emotion == 'neutral' or emotion=='boredom' or emotion=='relief':
+            res_emotions.append([0,0,0,1,0,0,0])    # Neutral
+            res_data.append(preprocess_text(data[i]))
+        elif emotion=='hate' or emotion=='anger':
+            res_emotions.append([1,0,0,0,0,0,0])    # Anger
+            res_data.append(preprocess_text(data[i]))
+        elif emotion=='happiness' or emotion=='love' or emotion=='fun' or emotion=='enthusiasm':
+            res_emotions.append([0,0,0,0,0,0,1])    # Happiness
+            res_data.append(preprocess_text(data[i]))
+        elif emotion=='sadness':
+            res_emotions.append([0,1,0,0,0,0,0])    # Sadness
+            res_data.append(preprocess_text(data[i]))
+        elif emotion=='worry':
+            res_emotions.append([0,0,0,0,1,0,0])    # Fear
+            res_data.append(preprocess_text(data[i]))
+        elif emotion=='surprise':
+            res_emotions.append([0,0,0,0,0,1,0])    # Surprise
+            res_data.append(preprocess_text(data[i]))
+        elif emotion=='empty':
+            continue
+    return res_data, res_emotions
 
 def map_TEC_emotion(emo):
     if emo==' anger':
@@ -106,12 +135,10 @@ def map_emoInt(emo):
         return [0,1,0,0,0,0,0]
     else:
         print("Unknown emotion "+ emo)
-        exit(1)
+        return None
 
 def map_electiontweets(emotion):
-    # print(emotion)
     emotion = emotion.split()
-    # print(emotion)
     if "anger" in emotion or 'vigilance' in emotion:
         return [1,0,0,0,0,0,0]
     elif 'sadness' in emotion:
@@ -130,3 +157,4 @@ def map_electiontweets(emotion):
     else:
         print("Emotion not recognised "+" ".join(emotion))
     return None
+

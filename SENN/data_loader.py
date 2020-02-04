@@ -6,13 +6,14 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 
 def load_allDatasets():
-    data_dailydialog, emotions_dailydialog = load_dailyDialogs()
-    data_crowdflower, emotions_crowdflower = load_crowdFlower()
-    data_tec, emotions_tec = load_TEC()
-    data_talesemotions, emotions_talesemotions = load_tales_emotions()
-    data_isear, emotions_isear = load_ISEAR()
-    data_emoint, emotions_emoint = load_emoInt()
-    data_electorialtweets, emotions_electorialtweets = load_electorialTweets()
+    data_folder = '/Users/andrejaanaandova/Downloads/data/electorial_tweets/datasets/'
+    data_dailydialog, emotions_dailydialog = load_dailyDialogs(data_folder)
+    data_crowdflower, emotions_crowdflower = load_crowdFlower(data_folder)
+    data_tec, emotions_tec = load_TEC(data_folder)
+    data_talesemotions, emotions_talesemotions = load_tales_emotions(data_folder)
+    data_isear, emotions_isear = load_ISEAR(data_folder)
+    data_emoint, emotions_emoint = load_emoInt(data_folder)
+    data_electorialtweets, emotions_electorialtweets = load_electorialTweets(data_folder)
 
     test_size = 0.1
 
@@ -60,13 +61,13 @@ def load_allDatasets():
 
     return X_train, X_test, y_train, y_test
 
-def load_dailyDialogs():
+def load_dailyDialogs(data_folder):
     print("Loading daily dialogs")
     # data_rez = {}
     # emotion_rez = {}
     data_rez = []
     emotion_rez = []
-    path = '/Users/andrejaanaandova/Downloads/data/electorial_tweets/datasets/dailydialog/ijcnlp_dailydialog/'
+    path = data_folder+'dailydialog/ijcnlp_dailydialog/'
     # print(os.listdir(path))
     data = (open(path + "dialogues_text.txt", "r")).read().split('\n')
     emotion = (open(path + "dialogues_emotion.txt", "r")).read().split('\n')
@@ -89,9 +90,9 @@ def load_dailyDialogs():
         # print(i)
     return data_rez, emotion_rez
 
-def load_crowdFlower():
+def load_crowdFlower(data_folder):
     print("Loading crowd flower")
-    file = '/Users/andrejaanaandova/Downloads/data/electorial_tweets/datasets/crowdflower/text_emotion.csv'
+    file = data_folder+'crowdflower/text_emotion.csv'
     # print (file)
     df = pd.read_csv(file)
     # print(data.head())
@@ -102,11 +103,11 @@ def load_crowdFlower():
     # print(data.shape)
     return map_crowdflower(data, emotions)
 
-def load_TEC():
+def load_TEC(data_folder):
     print("Loading TEC")
     data = []
     emotions = []
-    folder = '/Users/andrejaanaandova/Downloads/data/electorial_tweets/datasets/TEC/'
+    folder = data_folder+'TEC/'
     file = open(folder + 'Jan9-2012-tweets-clean.txt').read().split('\n')
     set_emo = set()
     for line in file:
@@ -122,12 +123,12 @@ def load_TEC():
     # print(set_emo)
     return data, emotions
 
-def load_tales_emotions():
+def load_tales_emotions(data_folder):
     print("Loading Tales Emotions")
     data = []
     emotions = []
     author = "grimms"
-    folder = '/Users/andrejaanaandova/Downloads/data/tales-emotions/Grimms/emmood/'
+    folder = data_folder+'tales-emotion/Grimms/emmood/'
     for file in os.listdir(folder):
         f_tmp = open(folder + file, 'r').read().split('\n')
         for f in f_tmp:
@@ -146,7 +147,7 @@ def load_tales_emotions():
             # print(f)
 
     author = "HCAndersen"
-    folder = '/Users/andrejaanaandova/Downloads/data/tales-emotions/HCAndersen/emmood/'
+    folder = data_folder+'tales-emotion/HCAndersen/emmood/'
     for file in os.listdir(folder):
         f_tmp = open(folder + file, 'r').read().split('\n')
         for f in f_tmp:
@@ -165,7 +166,7 @@ def load_tales_emotions():
             # print(f)
 
     author = "Potter"
-    folder = '/Users/andrejaanaandova/Downloads/data/tales-emotions/Potter/emmood/'
+    folder = data_folder+'tales-emotion/Potter/emmood/'
     for file in os.listdir(folder):
         f_tmp = open(folder + file, 'r').read().split('\n')
         for f in f_tmp:
@@ -187,9 +188,9 @@ def load_tales_emotions():
     # print(emotions)
     return data, emotions
 
-def load_ISEAR():
+def load_ISEAR(data_folder):
     print("Loading ISEAR")
-    folder = '/Users/andrejaanaandova/Downloads/data/electorial_tweets/datasets/isear/'
+    folder = data_folder+'isear/'
     file = open(folder + 'isear.csv').read().split('\n')
     # print(len(file))
     # set_emos = set()
@@ -218,11 +219,11 @@ def load_ISEAR():
     # print(set_emos)
     return data, emotions
 
-def load_emoInt():
+def load_emoInt(data_folder):
     print("Loading EmoInt")
     data = []
     emotions = []
-    file = "/Users/andrejaanaandova/Downloads/data/electorial_tweets/datasets/emoint/emoint_all"
+    file = data_folder+"emoint/emoint_all"
     # for file in os.listdir(folder):
     #     print(file)
     # emo = map_emoInt(file.split('-')[0])
@@ -244,11 +245,11 @@ def load_emoInt():
             # add_element(emotions, key, [emo])
     return data, emotions
 
-def load_electorialTweets():
+def load_electorialTweets(data_folder):
     print("Loading electorial tweets")
     data = {}
     emotions = {}
-    folder = '/Users/andrejaanaandova/Downloads/data/electorial_tweets/datasets/electoraltweets/Annotated-US2012-Election-Tweets/'
+    folder = data_folder+'electoraltweets/Annotated-US2012-Election-Tweets/'
     file1 = open(folder + 'Questionnaire1/AnnotatedTweets.txt').read().split('\n')
     file2 = open(folder + 'Questionnaire2/Batch1/AnnotatedTweets.txt').read().split('\n')
     file3 = open(folder + 'Questionnaire2/Batch2/AnnotatedTweets.txt').read().split('\n')

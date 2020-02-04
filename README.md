@@ -3,3 +3,5 @@
 To start this code, you first need to download
  - EWE emotion embedding, available at https://www.dropbox.com/s/5egqnbktbfxp2im/ewe_uni.txt.zip?dl=0
  - FastText english vec file, available on https://fasttext.cc/docs/en/crawl-vectors.html
+ 
+Change the location of the folder containing all your data in SENN/data_loader.py

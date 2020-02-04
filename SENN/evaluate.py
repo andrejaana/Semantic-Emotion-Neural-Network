@@ -1,5 +1,9 @@
 from sklearn.metrics import confusion_matrix
 import numpy as np
+import pandas as pd
+from keras.models import load_model
+from tensorflow.python.keras.preprocessing.sequence import pad_sequences
+import pickle
 
 
 def transform_labels(labels):
@@ -29,3 +33,71 @@ def evaluate(model, X_test, y_test):
     y_test_label = transform_labels(y_test)
 
     print(confusion_matrix(y_test_label, y_pred_label))
+
+def trans_leb(label):
+    max = np.argmax(label)
+    if max == 0:
+      return 'angry'
+    elif max == 1:
+      return 'sad'
+    elif max == 2:
+      return 'disgust'
+    elif max == 3:
+      return 'neutral'
+    elif max == 4:
+      return 'fear'
+    elif max==5:
+      return 'surprise'
+    else:
+      return 'happy'
+
+def evaluate_youtube_data():
+    data = pd.read_csv('youtube_data')
+    model = load_model('SENN/SENN.h5')
+    with open('SENN/tokenizer.pickle', 'rb') as handle:
+        tokenizer = pickle.load(handle)
+    emotions = data['supposed_emotion'].astype(str).tolist()
+    print(emotions)
+
+    # for i in range(0, len(emotions)):
+    #   emotions[i] = map_isear_emotions(emotions[i])
+    data = data['transcription_text'].astype(str).tolist()
+
+    data_seq = np.array(tokenizer.texts_to_sequences(data))
+    data_seq = pad_sequences(data_seq, padding='post')
+
+    pred_emos = []
+    true_emos = []
+    for j in range(0, len(data_seq)):
+        video = []
+        for i in range(34, data_seq.shape[1], 34):
+            tmp = data_seq[j][i - 34:i].tolist()
+            if len(tmp) == 34 and any(tmp):
+                # print(tmp)
+                video.append(tmp)
+        video = np.array(video)
+        # print(video)
+        if video == []:
+            print(data[j])
+        if video != []:
+            true_emos.append(emotions[j])
+            video1 = model.predict([video, video])
+            video = np.sum(model.predict([video, video]), axis=0) / len(video)
+            # print(video.shape)
+            word_label = trans_leb(video.tolist())
+            # print(word_label)
+            # print(transform_labels(video1))
+            # print(emotions[j])
+            pred_emos.append(word_label)
+
+    # y_pred_label = transform_labels(model.predict([data_seq, data_seq]))
+    # print(y_pred_label)
+    # y_test_label = transform_labels(emotions)
+    # y_test_label = emotions
+    # print(y_test_label)
+    # print(data)
+
+    print(confusion_matrix(true_emos, pred_emos))
+    print(classification_report(true_emos, pred_emos))
+    # print(data[0])
+    # print(data[1])

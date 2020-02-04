@@ -5,6 +5,7 @@
 # from graph_star.run_text_classification import graph_star_classification
 from SENN.data_loader import *
 from SENN.SENN import build_model, model
+import sys
 import pandas as pd
 import SENN.evaluate
 
@@ -30,7 +31,10 @@ import SENN.evaluate
 # data, emotions = load_electorialTweets()
 # model = model(data,emotions)
 
-X_train, X_test, y_train, y_test = load_allDatasets()
+data_folder = '/Users/andrejaanaandova/Downloads/data/electorial_tweets/datasets/'
+if len(sys.argv)>1:
+    data_folder = sys.argv[1]
+X_train, X_test, y_train, y_test = load_allDatasets(data_folder)
 model = build_model(X_train, X_test, y_train, y_test)
 
 # from SENN.SENN import get_attributes

@@ -5,8 +5,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import numpy as np
 
-def load_allDatasets():
-    data_folder = '/Users/andrejaanaandova/Downloads/data/electorial_tweets/datasets/'
+def load_allDatasets(data_folder):
     data_dailydialog, emotions_dailydialog = load_dailyDialogs(data_folder)
     data_crowdflower, emotions_crowdflower = load_crowdFlower(data_folder)
     data_tec, emotions_tec = load_TEC(data_folder)

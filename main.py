@@ -31,7 +31,7 @@ import SENN.evaluate
 # model = model(data,emotions)
 
 X_train, X_test, y_train, y_test = load_allDatasets()
-build_model(X_train, X_test, y_train, y_test)
+model = build_model(X_train, X_test, y_train, y_test)
 
 # from SENN.SENN import get_attributes
 # get_attributes()

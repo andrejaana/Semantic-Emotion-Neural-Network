@@ -3,8 +3,10 @@ from keras.layers import Dense, Conv1D, Flatten, Reshape, MaxPool1D, concatenate
 from keras.layers.embeddings import Embedding
 from tensorflow.python.keras.preprocessing.text import Tokenizer
 from tensorflow.python.keras.preprocessing.sequence import pad_sequences
+import tensorflow as tf
+from keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
-import codecs
+import codecs, pickle
 from tqdm import tqdm
 import fasttext.util
 import numpy as np
@@ -42,6 +44,8 @@ def load_embedding(path):
 def build_model(X_train, X_test, y_train, y_test):
     tokenizer = Tokenizer()
     tokenizer.fit_on_texts(X_train+X_test)
+    with open('SENN/tokenizer.pickle','wb') as handle:
+        pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
     X_train = np.array(tokenizer.texts_to_sequences(X_train))
     X_test = np.array(tokenizer.texts_to_sequences(X_test))
     X_train = pad_sequences(X_train, padding='post')
@@ -90,6 +94,9 @@ def build_model(X_train, X_test, y_train, y_test):
 
     inp = Input(shape=(sequence_length,))
     x = Embedding(nb_words1, EMBEDDING_DIM, weights=[embedding_matrix1])(inp)
+    x = Reshape((sequence_length * EMBEDDING_DIM, 1))(x)
+    x = Conv1D(filters=32, kernel_size=8, strides=1, activation='relu', padding='same')(x)
+    x = MaxPool1D(pool_size=4)(x)
     x = Bidirectional(LSTM(batch_size, return_sequences=True))(x)
     x = Flatten()(x)
     x = Dropout(0.5)(x)
@@ -105,7 +112,7 @@ def build_model(X_train, X_test, y_train, y_test):
         values = line.rstrip().rsplit(' ')
         word = values[0]
         coefs = np.asarray(values[1:], dtype='float32')
-        embeddings_index1[word] = coefs
+        embeddings_index2[word] = coefs
     f.close()
 
     words_not_found1 = []
@@ -143,8 +150,8 @@ def build_model(X_train, X_test, y_train, y_test):
     y = Dropout(0.5)(y)
     model2 = Model(inputs=inp2, outputs=y)
 
-
-
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
 
     # Combine both models
     combined = concatenate([model1.output, model2.output])
@@ -157,8 +164,9 @@ def build_model(X_train, X_test, y_train, y_test):
 
     # print(y_train)
     print(y_train)
-    model.fit(x=[X_train, X_train], y=y_train, batch_size=56, epochs=20)
-    model.save('SENN_dailydialog.h5')
+    model.fit(x=[X_train, X_train], y=y_train, batch_size=batch_size, epochs=20)
+    model.save('SENN/SENN.h5')
+    return model
 
 def load_embedding(file):
     print("loading embedding")

@@ -93,7 +93,7 @@ def build_model(X_train, X_test, y_train, y_test):
             words_not_found.append(word)
 
     inp = Input(shape=(sequence_length,))
-    x = Embedding(nb_words1, EMBEDDING_DIM, weights=[embedding_matrix1])(inp)
+    x = Embedding(nb_words1, EMBEDDING_DIM, weights=[embedding_matrix1], trainable=False)(inp)
     x = Reshape((sequence_length * EMBEDDING_DIM, 1))(x)
     x = Conv1D(filters=32, kernel_size=8, strides=1, activation='relu', padding='same')(x)
     x = MaxPool1D(pool_size=4)(x)
@@ -132,7 +132,7 @@ def build_model(X_train, X_test, y_train, y_test):
     filter_sizes = [3, 4, 5]
 
     inp2 = Input(shape=(sequence_length,))
-    embedding = Embedding(nb_words2, EMBEDDING_DIM, weights=[embedding_matrix2])(inp2)
+    embedding = Embedding(nb_words2, EMBEDDING_DIM, weights=[embedding_matrix2], trainable=Falses)(inp2)
     reshape = Reshape((sequence_length * EMBEDDING_DIM, 1))(embedding)
     conv_0 = Conv1D(filters=num_filters, kernel_size=filter_sizes[0], activation='relu',
                     kernel_regularizer=regularizers.l2(0.01))(reshape)

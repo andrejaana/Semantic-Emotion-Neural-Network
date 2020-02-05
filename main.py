@@ -22,15 +22,6 @@ import SENN.evaluate
 
 # graph_star_classification()
 
-# data, emotions = load_dailyDialogs()
-# load_crowdFlower()
-# load_TEC()
-# load_tales_emotions()
-# load_ISEAR()
-# load_emoInt()
-# data, emotions = load_electorialTweets()
-# model = model(data,emotions)
-
 data_folder = '/Users/andrejaanaandova/Downloads/data/electorial_tweets/datasets/'
 if len(sys.argv)>1:
     data_folder = sys.argv[1]
@@ -39,3 +30,12 @@ model = build_model(X_train, X_test, y_train, y_test)
 
 # from SENN.SENN import get_attributes
 # get_attributes()
+
+# load_crowdFlower()
+# load_TEC()
+# load_tales_emotions()
+# load_ISEAR()
+# load_emoInt()
+# data, emotions = load_electorialTweets()
+# data, emotions = load_emotioncause(data_folder)
+# model = model(data,emotions)

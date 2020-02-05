@@ -158,3 +158,22 @@ def map_electiontweets(emotion):
         print("Emotion not recognised "+" ".join(emotion))
     return None
 
+def map_emocause(emotion):
+    if emotion=='sad':
+        return [0,1,0,0,0,0,0]
+    elif emotion=='surprise':
+        return [0,0,0,0,0,1,0]
+    elif emotion=='disgust' or emotion=='shame':
+        return [0,0,1,0,0,0,0]
+    elif emotion=='anger':
+        return [1,0,0,0,0,0,0]
+    elif emotion=='happy':
+        return [0,0,0,0,0,0,1]
+    elif emotion=='fear':
+        return [0,0,0,0,1,0,0]
+    elif emotion=='':
+        return ''
+    else:
+        print("Unknown emotion "+emotion)
+        exit(1)
+

@@ -4,6 +4,7 @@ import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import numpy as np
+import re
 
 def load_allDatasets(data_folder):
     data_dailydialog, emotions_dailydialog = load_dailyDialogs(data_folder)
@@ -13,6 +14,7 @@ def load_allDatasets(data_folder):
     data_isear, emotions_isear = load_ISEAR(data_folder)
     data_emoint, emotions_emoint = load_emoInt(data_folder)
     data_electorialtweets, emotions_electorialtweets = load_electorialTweets(data_folder)
+    data_emocause, emotions_emocause = load_electorialTweets(data_folder)
 
     test_size = 0.1
 
@@ -41,7 +43,7 @@ def load_allDatasets(data_folder):
     y_train_isear = np.array(y_train_isear)
     y_test_isear = np.array(y_test_isear)
 
-    print(len(data_emoint))
+    # print(len(data_emoint))
     X_train_emoint, X_test_emoint, y_train_emoint, y_test_emoint \
         = train_test_split(data_emoint, emotions_emoint, test_size=test_size)
     y_train_emoint = np.array(y_train_emoint)
@@ -52,11 +54,16 @@ def load_allDatasets(data_folder):
     y_train_electorialtweets = np.array(y_train_electorialtweets)
     y_test_electorialtweets = np.array(y_test_electorialtweets)
 
-    X_train = X_train_dailydialog+X_train_crowdflower+X_train_tec+X_train_talesemotions+X_train_isear+X_train_emoint+X_train_electorialtweets
-    X_test = X_test_dailydialog+X_test_crowdflower+X_test_tec+X_test_talesemotions+X_test_isear+X_test_emoint+X_test_electorialtweets
+    X_train_emocause, X_test_emocause, y_train_emocause, y_test_emocause \
+        = train_test_split(data_emocause, emotions_emocause, test_size=test_size)
+    y_train_emocause = np.array(y_train_emocause)
+    y_test_emocause = np.array(y_test_emocause)
+
+    X_train = X_train_dailydialog+X_train_crowdflower+X_train_tec+X_train_talesemotions+X_train_isear+X_train_emoint+X_train_electorialtweets+X_train_emocause
+    X_test = X_test_dailydialog+X_test_crowdflower+X_test_tec+X_test_talesemotions+X_test_isear+X_test_emoint+X_test_electorialtweets+X_test_emocause
     # print(y_train_dailydialog.shape, y_train_crowdflower.shape)
-    y_train = np.concatenate((y_train_dailydialog, y_train_crowdflower, y_train_tec, y_train_talesemotions, y_train_isear, y_train_emoint,y_train_electorialtweets))
-    y_test = np.concatenate((y_test_dailydialog, y_test_crowdflower, y_test_tec, y_test_talesemotions, y_test_isear, y_test_emoint, y_test_electorialtweets))
+    y_train = np.concatenate((y_train_dailydialog, y_train_crowdflower, y_train_tec, y_train_talesemotions, y_train_isear, y_train_emoint,y_train_electorialtweets, y_train_emocause))
+    y_test = np.concatenate((y_test_dailydialog, y_test_crowdflower, y_test_tec, y_test_talesemotions, y_test_isear, y_test_emoint, y_test_electorialtweets, y_test_emocause))
 
     return X_train, X_test, y_train, y_test
 
@@ -307,6 +314,44 @@ def load_electorialTweets(data_folder):
     # print(len(file1))
     # print(len(file2))
     # print(len(file3))
+
+def load_emotioncause(data_folder):
+    data = []
+    emotions = []
+    # set_emos = set()
+    file = open(data_folder+"emotion-cause/Dataset/Emotion cause.txt", 'r').read().split('\n')
+    for line in file:
+        emotion = map_emocause(line.split('>')[0][1:])
+        if emotion=='':
+            print(line)
+            continue
+        text = re.sub(r'<cause>', ' ', line)
+        text = re.sub(r'<\\cause>', ' ', text)
+        text = " ".join(text.split('<\\')[:-1])
+        text = preprocess_text(" ".join(text.split('>')[1:]))
+        # print(emotion)
+        # print(text)
+        # set_emos.add(emotion)
+        data.append(text)
+        emotions.append(emotion)
+    file = open(data_folder+"emotion-cause/Dataset/No cause.txt", 'r').read().split('\n')
+    for line in file:
+        emotion = map_emocause(line.split('>')[0][1:])
+        if emotion=='':
+            print(line)
+            continue
+        text = re.sub(r'<cause>', ' ', line)
+        text = re.sub(r'<\\cause>', ' ', text)
+        text = " ".join(text.split('<\\')[:-1])
+        text = preprocess_text(" ".join(text.split('>')[1:]))
+        # print(emotion)
+        # print(text)
+        # set_emos.add(emotion)
+        data.append(text)
+        emotions.append(emotion)
+    # print(set_emos)
+    return data, emotions
+
 
 def add_element(dict, key, el):
     if el[-1] == '':

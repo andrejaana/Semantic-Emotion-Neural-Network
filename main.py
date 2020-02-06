@@ -8,6 +8,7 @@ from SENN.SENN import build_model, model
 import sys
 import pandas as pd
 import SENN.evaluate
+from SENN.evaluate import evaluate_youtube_data
 
 
 # data = get_youtube_data()
@@ -22,11 +23,11 @@ import SENN.evaluate
 
 # graph_star_classification()
 
-data_folder = '/Users/andrejaanaandova/Downloads/data/electorial_tweets/datasets/'
-if len(sys.argv)>1:
-    data_folder = sys.argv[1]
-X_train, X_test, y_train, y_test = load_allDatasets(data_folder)
-model = build_model(X_train, X_test, y_train, y_test)
+# data_folder = '/Users/andrejaanaandova/Downloads/data/electorial_tweets/datasets/'
+# if len(sys.argv)>1:
+#     data_folder = sys.argv[1]
+# X_train, X_test, y_train, y_test = load_allDatasets(data_folder)
+# model = build_model(X_train, X_test, y_train, y_test)
 
 # from SENN.SENN import get_attributes
 # get_attributes()
@@ -39,3 +40,5 @@ model = build_model(X_train, X_test, y_train, y_test)
 # data, emotions = load_electorialTweets()
 # data, emotions = load_emotioncause(data_folder)
 # model = model(data,emotions)
+
+evaluate_youtube_data()

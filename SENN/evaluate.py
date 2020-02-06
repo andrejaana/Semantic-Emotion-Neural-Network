@@ -5,6 +5,7 @@ import pandas as pd
 from keras.models import load_model
 from tensorflow.python.keras.preprocessing.sequence import pad_sequences
 import pickle
+from sklearn.utils import shuffle
 
 
 def transform_labels(labels):
@@ -36,6 +37,7 @@ def evaluate(model, X_test, y_test):
     print(confusion_matrix(y_test_label, y_pred_label))
 
 def trans_leb(label):
+    # label[3] = 0
     max = np.argmax(label)
     if max == 0:
       return 'angry'
@@ -54,26 +56,30 @@ def trans_leb(label):
 
 def evaluate_youtube_data():
     data = pd.read_csv('youtube_data')
-    model = load_model('SENN/SENN.h5')
+    model = load_model('SENN/SENN-last-weights-improvement.hdf5')
     with open('SENN/tokenizer.pickle', 'rb') as handle:
         tokenizer = pickle.load(handle)
     emotions = data['supposed_emotion'].astype(str).tolist()
-    print(emotions)
 
     # for i in range(0, len(emotions)):
     #   emotions[i] = map_isear_emotions(emotions[i])
     data = data['transcription_text'].astype(str).tolist()
 
+    data, emotions = shuffle(data, emotions)
+    print(emotions)
+
     data_seq = np.array(tokenizer.texts_to_sequences(data))
     data_seq = pad_sequences(data_seq, padding='post')
+
+    sequence_length = 32
 
     pred_emos = []
     true_emos = []
     for j in range(0, len(data_seq)):
         video = []
-        for i in range(34, data_seq.shape[1], 34):
-            tmp = data_seq[j][i - 34:i].tolist()
-            if len(tmp) == 34 and any(tmp):
+        for i in range(sequence_length, data_seq.shape[1], sequence_length):
+            tmp = data_seq[j][i - sequence_length:i].tolist()
+            if len(tmp) == sequence_length and any(tmp):
                 # print(tmp)
                 video.append(tmp)
         video = np.array(video)
@@ -90,6 +96,9 @@ def evaluate_youtube_data():
             # print(transform_labels(video1))
             # print(emotions[j])
             pred_emos.append(word_label)
+            print(data[j])
+            print(video)
+            print(emotions[j], word_label)
 
     # y_pred_label = transform_labels(model.predict([data_seq, data_seq]))
     # print(y_pred_label)
